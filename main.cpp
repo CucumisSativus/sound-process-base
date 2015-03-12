@@ -1,6 +1,4 @@
-#include	<stdio.h>
-#include	<string.h>
-
+#include 	<iostream>
 #include	<sndfile.hh>
 
 #define		BUFFER_LEN	1024
@@ -15,42 +13,36 @@ main (void)
 {
 	static double data [BUFFER_LEN] ;
 
-	SNDFILE	*infile, *outfile ;
-
-	SF_INFO		sfinfo ;
 	int			readcount ;
 	const char	*infilename = "input.wav" ;
 	const char	*outfilename = "output.wav" ;
+	SndfileHandle infileHandle;
+	SndfileHandle outfileHandle;
 
-	memset (&sfinfo, 0, sizeof (sfinfo)) ;
-
-
-	if (! (infile = sf_open (infilename, SFM_READ, &sfinfo)))
-	{	/* Open failed so print an error message. */
-		printf ("Not able to open input file %s.\n", infilename) ;
-		/* Print the error message from libsndfile. */
+	if (! (infileHandle = SndfileHandle(infilename, SFM_READ)))
+	{
+		std::cout << "Not able to open input file " << infilename << std::endl;
 		puts (sf_strerror (NULL)) ;
 		return 1 ;
 	} ;
 
-	if (sfinfo.channels > MAX_CHANNELS)
-	{	printf ("Not able to process more than %d channels\n", MAX_CHANNELS) ;
+	if (infileHandle.channels() > MAX_CHANNELS)
+	{
+		std::cout << "Not able to process more than %d channels "<<  MAX_CHANNELS;
 		return 1 ;
 	} ;
 	/* Open the output file. */
-	if (! (outfile = sf_open (outfilename, SFM_WRITE, &sfinfo)))
-	{	printf ("Not able to open output file %s.\n", outfilename) ;
+	if (! (outfileHandle = SndfileHandle(outfilename, SFM_WRITE, infileHandle.format(), infileHandle.channels(), infileHandle.samplerate())))
+	{
+		std:: cout << "Not able to open output file " << outfilename;
 		puts (sf_strerror (NULL)) ;
 		return 1 ;
 	} ;
 
-	while ((readcount = sf_read_double (infile, data, BUFFER_LEN)))
-	{	process_data (data, readcount, sfinfo.channels) ;
-		sf_write_double (outfile, data, readcount) ;
+	while ((readcount = infileHandle.read(data, BUFFER_LEN)))
+	{	process_data (data, readcount, infileHandle.channels()) ;
+		outfileHandle.write(data, readcount) ;
 	} ;
-
-	sf_close (infile) ;
-	sf_close (outfile) ;
 
 	return 0 ;
 } /* main */
