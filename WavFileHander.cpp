@@ -32,7 +32,7 @@ void WavFileHander::readWhole() {
     }
 }
 
-sampleVector WavFileHander::wholeFile() {
+sampleVector WavFileHander::wholeFile() const {
     return samples;
 }
 

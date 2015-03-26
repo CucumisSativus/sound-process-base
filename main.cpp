@@ -1,7 +1,8 @@
 #include 	<iostream>
+#include 	<cstdlib>
 #include "WavFileHander.h"
-
-static void process_data(double *data, int count, int channels);
+#include "GnuplotPlotter.h"
+#include "PhaseSpaceAnalyser.h"
 
 
 int
@@ -13,8 +14,9 @@ main(void) {
 
 
 	WavFileHander hander(infilename, outfilename);
-	hander.writeToOutFile();
-
+	PhaseSpaceAnalyser analyser(hander, new GnuplotPlotter("out.dat"), 10);
+	analyser.plot();
+//	hander.writeToOutFile();
 	return 0;
 }
 

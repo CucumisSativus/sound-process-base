@@ -23,7 +23,7 @@ class WavFileHander {
 public:
     WavFileHander(std::string infilename, std::string outfilename);
 
-    sampleVector wholeFile();
+    sampleVector wholeFile() const ;
 
     void writeToOutFile();
 

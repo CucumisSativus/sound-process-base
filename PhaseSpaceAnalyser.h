@@ -10,13 +10,20 @@
 #include <string>
 
 #include "analyser.h"
+#include "WavFileHander.h"
+#include "Base_Plotter.h"
 
 class PhaseSpaceAnalyser : public Analyser {
 public:
-    PhaseSpaceAnalyser();
+    PhaseSpaceAnalyser(const WavFileHander & handler, BasePlotter * plotter, unsigned long k = 10);
+    ~PhaseSpaceAnalyser();
+
+    void plot();
 
 private:
     std::vector<std::pair<double, double> > phaseSpace;
+    BasePlotter * plotter;
+
 
 
 };
