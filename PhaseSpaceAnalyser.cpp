@@ -8,6 +8,7 @@
 PhaseSpaceAnalyser::PhaseSpaceAnalyser(const WavFileHander &handler, BasePlotter *plotter, unsigned long k)
 :   plotter(plotter)
 {
+    samplingRate = handler.samplerate();
     sampleVector samples = handler.wholeFile();
     std::cout << "In Analyser constructor, samples size" << samples.size() << std::endl;
     phaseSpace.reserve(samples.size());
@@ -54,4 +55,8 @@ bool PhaseSpaceAnalyser::breakIteration(double current_x, double current_y, doub
     double distance = std::sqrt(distance_x + distance_y);
 
     return distance <= tolerance;
+}
+
+double PhaseSpaceAnalyser::results() {
+    return (double)samplingRate/iterations;
 }

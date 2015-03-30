@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include <exception>
+#include <stdexcept>
 #include <vector>
 
 typedef std::vector<double> sampleVector;
@@ -24,7 +25,7 @@ public:
     WavFileHander(std::string infilename, std::string outfilename);
 
     sampleVector wholeFile() const ;
-
+    sf_count_t samplerate() const;
     void writeToOutFile();
 
 private:
