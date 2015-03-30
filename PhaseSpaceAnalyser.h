@@ -8,11 +8,12 @@
 
 #include <vector>
 #include <string>
+#include <set>
+#include <cmath>
 
 #include "analyser.h"
 #include "WavFileHander.h"
 #include "Base_Plotter.h"
-
 class PhaseSpaceAnalyser : public Analyser {
 public:
     PhaseSpaceAnalyser(const WavFileHander & handler, BasePlotter * plotter, unsigned long k = 10);
@@ -21,8 +22,11 @@ public:
     void plot();
 
 private:
+    bool breakIteration(double current_x, double current_y, double first_x, double first_y);
+
     std::vector<std::pair<double, double> > phaseSpace;
     BasePlotter * plotter;
+    unsigned long iterations;
 
 
 
