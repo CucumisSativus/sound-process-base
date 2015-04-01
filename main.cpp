@@ -4,6 +4,7 @@
 #include "GnuplotPlotter.h"
 #include "PhaseSpaceAnalyser.h"
 #include "SineFunction.h"
+#include "CombFilterAnalyser.h"
 
 int
 main(void) {
@@ -13,10 +14,11 @@ main(void) {
 
 	WavFileHander hander(infilename, outfilename);
 	PhaseSpaceAnalyser analyser(hander, new GnuplotPlotter("out.dat"), 10);
+	analyser.plot();
+	std::cout << "Phase space: " << analyser.results() << std::endl;
 
-	std::cout << analyser.results() << std::endl;
-
-	
+	CombFilterAnalyser analyser2(hander, new SineFunction());
+	std::cout << "Comb filter: " << analyser2.results() << std::endl;
 //	hander.writeToOutFile();
 	return 0;
 }

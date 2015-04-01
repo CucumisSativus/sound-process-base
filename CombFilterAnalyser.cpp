@@ -14,15 +14,18 @@ CombFilterAnalyser::~CombFilterAnalyser() {
     delete function;
 }
 
-int CombFilterAnalyser::analyse() {
+int CombFilterAnalyser::results() {
     double max = 0;
+    int maxFreq = 0;
     double sum = 0;
     for(int i = freqMin; i < freqMax; ++i){
         for(unsigned long j = 0; j < samples.size(); ++j) {
             sum = function->compute(i *j) + samples[j];
             if(sum > max){
                 max = sum;
+                maxFreq =i;
             }
         }
     }
+    return maxFreq;
 }

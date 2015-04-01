@@ -27,6 +27,8 @@ PhaseSpaceAnalyser::PhaseSpaceAnalyser(const WavFileHander &handler, BasePlotter
 
     }
     std::cout << "In Analyser constructor, phase space size" << phaseSpace.size() << std::endl;
+    std::cout << "Sampling rate" << samplingRate << std::endl;
+    std::cout << "Iterations" << iterations << std::endl;
 }
 
 PhaseSpaceAnalyser::~PhaseSpaceAnalyser() {
@@ -42,7 +44,7 @@ void PhaseSpaceAnalyser::plot() {
 }
 
 bool PhaseSpaceAnalyser::breakIteration(double current_x, double current_y, double first_x, double first_y) {
-    const double tolerance = 0.001;
+    const double tolerance = 0.01;
     const unsigned long minIterationNum = 50;
 
     if(iterations < minIterationNum){
