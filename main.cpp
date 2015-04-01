@@ -3,19 +3,19 @@
 #include "WavFileHander.h"
 #include "GnuplotPlotter.h"
 #include "PhaseSpaceAnalyser.h"
-
+#include "SineFunction.h"
 
 int
 main(void) {
-
-	int readcount;
 	const char *infilename = "input.wav";
 	const char *outfilename = "output.wav";
 
 
 	WavFileHander hander(infilename, outfilename);
 	PhaseSpaceAnalyser analyser(hander, new GnuplotPlotter("out.dat"), 10);
-	analyser.plot();
+	std::cout << analyser.;
+
+
 //	hander.writeToOutFile();
 	return 0;
 }
