@@ -13,9 +13,10 @@ main(void) {
 
 	WavFileHander hander(infilename, outfilename);
 	PhaseSpaceAnalyser analyser(hander, new GnuplotPlotter("out.dat"), 10);
-	std::cout << analyser.;
 
+	std::cout << analyser.results() << std::endl;
 
+	
 //	hander.writeToOutFile();
 	return 0;
 }

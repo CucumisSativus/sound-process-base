@@ -41,3 +41,7 @@ void WavFileHander::writeToOutFile() {
     sf_count_t size = samples.size();
     outfileHandle.write(outputData, size);
 }
+
+sf_count_t WavFileHander::samplerate() const {
+    infileHandle.samplerate();
+}

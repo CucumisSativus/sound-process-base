@@ -20,13 +20,14 @@ public:
     ~PhaseSpaceAnalyser();
 
     void plot();
-
+    double results();
 private:
     bool breakIteration(double current_x, double current_y, double first_x, double first_y);
 
     std::vector<std::pair<double, double> > phaseSpace;
     BasePlotter * plotter;
     unsigned long iterations;
+    sf_count_t samplingRate;
 
 
 
