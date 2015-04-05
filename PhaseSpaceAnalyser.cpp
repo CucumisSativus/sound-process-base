@@ -35,7 +35,7 @@ PhaseSpaceAnalyser::~PhaseSpaceAnalyser() {
     delete plotter;
 }
 
-void PhaseSpaceAnalyser::plot() {
+void PhaseSpaceAnalyser::plot() const{
     PointsVector::const_iterator begin = phaseSpace.begin();
     PointsVector::const_iterator end = phaseSpace.begin() + iterations;
     PointsVector subVector(begin, end);
@@ -59,6 +59,6 @@ bool PhaseSpaceAnalyser::breakIteration(double current_x, double current_y, doub
     return distance <= tolerance;
 }
 
-double PhaseSpaceAnalyser::results() {
+double PhaseSpaceAnalyser::results() const{
     return (double)samplingRate/iterations;
 }

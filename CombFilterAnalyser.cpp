@@ -14,18 +14,21 @@ CombFilterAnalyser::~CombFilterAnalyser() {
     delete function;
 }
 
-int CombFilterAnalyser::results() {
-    double max = 0;
-    int maxFreq = 0;
+int CombFilterAnalyser::results(int frequencyStep) const {
+    double max = -1 * std::numeric_limits<double>::max();
+    int result = 0;
     double sum = 0;
-    for(int i = freqMin; i < freqMax; ++i){
-        for(unsigned long j = 0; j < samples.size(); ++j) {
-            sum = function->compute(i *j) + samples[j];
-            if(sum > max){
-                max = sum;
-                maxFreq =i;
-            }
+    for(int frequency = freqMin; frequency < freqMax; frequency += frequencyStep){
+        for(unsigned long sample = 0; sample < samples.size(); ++sample) {
+            sum += function->compute(sample, frequency) * samples[sample];
+
         }
+        std::cout << "Frequency: " << frequency << " sum: " << sum << std::endl;
+        if(sum > max){
+            max = sum;
+            result = frequency;
+        }
+        sum = 0;
     }
-    return maxFreq;
+    return result;
 }

@@ -7,10 +7,10 @@
 
 #include "WaveFunction.h"
 #include <cmath>
-class SineFunction : public WaveFunction{
+class CombFunction : public WaveFunction{
 
 public:
-    virtual double compute(double x);
+    virtual double compute(double x, double frequency);
 };
 
 

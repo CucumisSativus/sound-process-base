@@ -3,7 +3,7 @@
 #include "WavFileHander.h"
 #include "GnuplotPlotter.h"
 #include "PhaseSpaceAnalyser.h"
-#include "SineFunction.h"
+#include "CombFunction.h"
 #include "CombFilterAnalyser.h"
 
 int
@@ -17,9 +17,8 @@ main(void) {
 	analyser.plot();
 	std::cout << "Phase space: " << analyser.results() << std::endl;
 
-	CombFilterAnalyser analyser2(hander, new SineFunction());
-	std::cout << "Comb filter: " << analyser2.results() << std::endl;
-//	hander.writeToOutFile();
+	CombFilterAnalyser analyser2(hander, new CombFunction());
+	std::cout << "Comb filter: " << analyser2.results(10) << std::endl;
 	return 0;
 }
 

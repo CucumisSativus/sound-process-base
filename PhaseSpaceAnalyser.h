@@ -19,8 +19,8 @@ public:
     PhaseSpaceAnalyser(const WavFileHander & handler, BasePlotter * plotter, unsigned long k = 10);
     ~PhaseSpaceAnalyser();
 
-    void plot();
-    double results();
+    void plot() const;
+    double results() const;
 private:
     bool breakIteration(double current_x, double current_y, double first_x, double first_y);
 

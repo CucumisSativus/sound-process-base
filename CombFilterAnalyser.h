@@ -6,7 +6,7 @@
 #define SOUND_PROCESS_BASE_COMBFILTERANALYSER_H
 
 #include <vector>
-
+#include <limits>
 #include "WaveFunction.h"
 #include "WavFileHander.h"
 
@@ -16,7 +16,7 @@ class CombFilterAnalyser {
 public:
     CombFilterAnalyser(const WavFileHander & handler, WaveFunction * function, int freqMin = 16, int freqMax = 22000);
     ~CombFilterAnalyser();
-    int results();
+    int results(int frequencyStep) const;
 private:
     CombVector samples;
     WaveFunction * function;
