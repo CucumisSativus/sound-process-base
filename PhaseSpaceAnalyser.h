@@ -27,7 +27,7 @@ private:
     std::vector<std::pair<double, double> > phaseSpace;
     BasePlotter * plotter;
     unsigned long iterations;
-    sf_count_t samplingRate;
+    int samplingRate;
 
 
 

@@ -60,5 +60,5 @@ bool PhaseSpaceAnalyser::breakIteration(double current_x, double current_y, doub
 }
 
 double PhaseSpaceAnalyser::results() const{
-    return (double)samplingRate/iterations;
+    return samplingRate/(double)iterations;
 }

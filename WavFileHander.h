@@ -25,7 +25,7 @@ public:
     WavFileHander(std::string infilename, std::string outfilename);
 
     sampleVector wholeFile() const ;
-    sf_count_t samplerate() const;
+    int samplerate() const;
     void writeToOutFile();
 
 private:
