@@ -5,49 +5,51 @@
 #include "PhaseSpaceAnalyser.h"
 
 
-PhaseSpaceAnalyser::PhaseSpaceAnalyser(const WavFileHander &handler, BasePlotter *plotter, unsigned long k)
-:   plotter(plotter)
-{
+PhaseSpaceAnalyser::PhaseSpaceAnalyser(const WavFileHander &handler, BasePlotter *plotter, unsigned long k,
+                                       unsigned long batch_size)
+        : plotter(plotter) {
     samplingRate = handler.samplerate();
     sampleVector samples = handler.wholeFile();
-    std::cout << "In Analyser constructor, samples size" << samples.size() << std::endl;
-    phaseSpace.reserve(samples.size());
+    for (unsigned long batch = k; batch < samples.size(); batch += batch_size) {
+        double first_x = samples[batch];
+        double first_y = samples[batch - k];
+        unsigned long iterations_num = 0;
 
-    double first_x = samples[k];
-    double first_y = samples[0];
+        for (unsigned long sample = batch + 1; sample < samples.size() && sample < batch + batch_size; ++sample) {
+            double &x = samples[sample];
+            double &y = samples[sample - k];
 
-    for(iterations = k+1; iterations < samples.size(); ++iterations){
-        double &x = samples[iterations];
-        double &y = samples[iterations-k];
+            if (breakIteration(iterations_num, x, y, first_x, first_y)) {
+                break;
+            }
+            phaseSpace.push_back(std::pair<double, double>(x, y));
+            iterations_num++;
 
-        if(breakIteration(x, y, first_x, first_y)){
-            break;
         }
-        phaseSpace.push_back(std::pair<double, double>(x, y));
-
+        if (plotter) {
+            plot(batch - k, batch - k + iterations_num);
+        }
+        iterationsCounts.push_back(iterations_num);
     }
-    std::cout << "In Analyser constructor, phase space size" << phaseSpace.size() << std::endl;
-    std::cout << "Sampling rate" << samplingRate << std::endl;
-    std::cout << "Iterations" << iterations << std::endl;
 }
 
 PhaseSpaceAnalyser::~PhaseSpaceAnalyser() {
     delete plotter;
 }
 
-void PhaseSpaceAnalyser::plot() const{
-    PointsVector::const_iterator begin = phaseSpace.begin();
-    PointsVector::const_iterator end = phaseSpace.begin() + iterations;
+void PhaseSpaceAnalyser::plot(unsigned long start, unsigned long samples_count) const {
+    PointsVector::const_iterator begin = phaseSpace.begin() + start;
+    PointsVector::const_iterator end = phaseSpace.begin() + samples_count;
     PointsVector subVector(begin, end);
-    std::cout << "In Analyser plot, subVector size" << subVector.size() << std::endl;
     plotter->plot(subVector);
 }
 
-bool PhaseSpaceAnalyser::breakIteration(double current_x, double current_y, double first_x, double first_y) {
+bool PhaseSpaceAnalyser::breakIteration(unsigned long iterations_num, double current_x, double current_y,
+                                        double first_x, double first_y) {
     const double tolerance = 0.01;
     const unsigned long minIterationNum = 50;
 
-    if(iterations < minIterationNum){
+    if (iterations_num < minIterationNum) {
         return false;
     }
 
@@ -59,6 +61,11 @@ bool PhaseSpaceAnalyser::breakIteration(double current_x, double current_y, doub
     return distance <= tolerance;
 }
 
-double PhaseSpaceAnalyser::results() const{
-    return samplingRate/(double)iterations;
+std::vector<double> PhaseSpaceAnalyser::results() {
+    std::vector<double> result;
+    for (std::vector<unsigned long>::const_iterator it = iterationsCounts.cbegin();
+         it != iterationsCounts.cend(); ++it) {
+        result.push_back((double) samplingRate / (*it));
+    }
+    return result;
 }

@@ -16,17 +16,20 @@
 #include "Base_Plotter.h"
 class PhaseSpaceAnalyser : public Analyser {
 public:
-    PhaseSpaceAnalyser(const WavFileHander & handler, BasePlotter * plotter, unsigned long k = 10);
+    PhaseSpaceAnalyser(const WavFileHander &handler, BasePlotter *plotter, unsigned long k,
+                       unsigned long batch_size = 1024);
     ~PhaseSpaceAnalyser();
 
-    void plot() const;
-    double results() const;
+    void plot(unsigned long start, unsigned long samples_count) const;
+
+    std::vector<double> results();
 private:
-    bool breakIteration(double current_x, double current_y, double first_x, double first_y);
+    bool breakIteration(unsigned long iterations_num, double current_x, double current_y,
+                        double first_x, double first_y);
 
     std::vector<std::pair<double, double> > phaseSpace;
     BasePlotter * plotter;
-    unsigned long iterations;
+    std::vector<unsigned long> iterationsCounts;
     int samplingRate;
 
 

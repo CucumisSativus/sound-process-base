@@ -1,10 +1,7 @@
 #include 	<iostream>
-#include 	<cstdlib>
 #include "WavFileHander.h"
 #include "GnuplotPlotter.h"
 #include "PhaseSpaceAnalyser.h"
-#include "CombFunction.h"
-#include "CombFilterAnalyser.h"
 
 int
 main(void) {
@@ -13,12 +10,14 @@ main(void) {
 
 
 	WavFileHander hander(infilename, outfilename);
-	PhaseSpaceAnalyser analyser(hander, new GnuplotPlotter("out.dat"), 10);
-	analyser.plot();
-	std::cout << "Phase space: " << analyser.results() << std::endl;
+	PhaseSpaceAnalyser analyser(hander, new GnuplotPlotter("out.dat"), 10, 1000);
+	std::vector<double> phaseSpaceResults = analyser.results();
+	for (std::vector<double>::const_iterator it = phaseSpaceResults.cbegin(); it != phaseSpaceResults.cend(); ++it) {
+		std::cout << "Phase space: " << *it << std::endl;
+	}
 
-	CombFilterAnalyser analyser2(hander, new CombFunction());
-	std::cout << "Comb filter: " << analyser2.results(10) << std::endl;
+//	CombFilterAnalyser analyser2(hander, new CombFunction());
+//	std::cout << "Comb filter: " << analyser2.results(10) << std::endl;
 	return 0;
 }
 
