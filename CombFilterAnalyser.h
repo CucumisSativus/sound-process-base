@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <limits>
+#include <fftw3.h>
 #include "WaveFunction.h"
 #include "WavFileHander.h"
 
@@ -14,14 +15,25 @@ typedef std::vector<double> CombVector;
 
 class CombFilterAnalyser {
 public:
-    CombFilterAnalyser(const WavFileHander & handler, WaveFunction * function, int freqMin = 16, int freqMax = 22000);
+    CombFilterAnalyser(const WavFileHander &handler, WaveFunction *function, int freqMin,
+                       int freqMax, unsigned long batchSize);
     ~CombFilterAnalyser();
-    int results(int frequencyStep) const;
+
+    std::vector<int> results(int frequencyStep);
 private:
     CombVector samples;
     WaveFunction * function;
     int freqMin;
     int freqMax;
+    unsigned long batchSize;
+
+    void calculateFft(double *data, fftw_complex *out, int dataSize);
+
+    void calculateFunctionFft(double *samplesBatch, int dataSize, int frequency, double *&functionData,
+                              fftw_complex *&transformedFunctionData);
+
+    int calculateCombFrequency(int frequencyStep, double *samplesBatch, fftw_complex *transformedSamplesBatch,
+                               int dataSize);
 };
 
 

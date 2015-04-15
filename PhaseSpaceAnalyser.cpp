@@ -36,7 +36,9 @@ PhaseSpaceAnalyser::PhaseSpaceAnalyser(const WavFileHander &handler, BasePlotter
 }
 
 PhaseSpaceAnalyser::~PhaseSpaceAnalyser() {
-    delete plotter;
+    if (plotter) {
+        delete plotter;
+    }
 }
 
 void PhaseSpaceAnalyser::plot(unsigned long start, unsigned long samples_count) const {
