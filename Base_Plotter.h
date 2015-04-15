@@ -7,7 +7,7 @@
 
 #include <vector>
 
-typedef std::vector< std::pair<double, double> > PointsVector;
+typedef std::vector<std::tuple<double, double, double> > PointsVector;
 
 class BasePlotter {
 public:

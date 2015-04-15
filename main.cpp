@@ -10,7 +10,7 @@ main(void) {
 
 
 	WavFileHander hander(infilename, outfilename);
-	PhaseSpaceAnalyser analyser(hander, new GnuplotPlotter("out.dat"), 10, 1000);
+	PhaseSpaceAnalyser analyser(hander, new GnuplotPlotter("out.dat"), 10, 10000);
 	std::vector<double> phaseSpaceResults = analyser.results();
 	for (std::vector<double>::const_iterator it = phaseSpaceResults.cbegin(); it != phaseSpaceResults.cend(); ++it) {
 		std::cout << "Phase space: " << *it << std::endl;

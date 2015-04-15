@@ -10,6 +10,7 @@
 #include <string>
 #include <set>
 #include <cmath>
+#include <tuple>
 
 #include "analyser.h"
 #include "WavFileHander.h"
@@ -24,10 +25,11 @@ public:
 
     std::vector<double> results();
 private:
-    bool breakIteration(unsigned long iterations_num, double current_x, double current_y,
-                        double first_x, double first_y);
+    bool breakIteration(unsigned long iterations_num, double current_x, double current_y, double current_z,
+                        double first_x,
+                        double first_y, double first_z);
 
-    std::vector<std::pair<double, double> > phaseSpace;
+    PointsVector phaseSpace;
     BasePlotter * plotter;
     std::vector<unsigned long> iterationsCounts;
     int samplingRate;

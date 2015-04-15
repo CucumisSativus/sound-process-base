@@ -10,19 +10,21 @@ PhaseSpaceAnalyser::PhaseSpaceAnalyser(const WavFileHander &handler, BasePlotter
         : plotter(plotter) {
     samplingRate = handler.samplerate();
     sampleVector samples = handler.wholeFile();
-    for (unsigned long batch = k; batch < samples.size(); batch += batch_size) {
+    for (unsigned long batch = 2 * k; batch < samples.size(); batch += batch_size) {
         double first_x = samples[batch];
         double first_y = samples[batch - k];
+        double first_z = samples[batch - 2 * k];
         unsigned long iterations_num = 0;
 
         for (unsigned long sample = batch + 1; sample < samples.size() && sample < batch + batch_size; ++sample) {
             double &x = samples[sample];
             double &y = samples[sample - k];
+            double &z = samples[sample - 2 * k];
 
-            if (breakIteration(iterations_num, x, y, first_x, first_y)) {
+            if (breakIteration(iterations_num, x, y, z, first_x, first_y, first_z)) {
                 break;
             }
-            phaseSpace.push_back(std::pair<double, double>(x, y));
+            phaseSpace.push_back(std::make_tuple(x, y, z));
             iterations_num++;
 
         }
@@ -45,7 +47,8 @@ void PhaseSpaceAnalyser::plot(unsigned long start, unsigned long samples_count) 
 }
 
 bool PhaseSpaceAnalyser::breakIteration(unsigned long iterations_num, double current_x, double current_y,
-                                        double first_x, double first_y) {
+                                        double current_z, double first_x,
+                                        double first_y, double first_z) {
     const double tolerance = 0.01;
     const unsigned long minIterationNum = 50;
 
@@ -55,8 +58,9 @@ bool PhaseSpaceAnalyser::breakIteration(unsigned long iterations_num, double cur
 
     double distance_x = (current_x - first_x) * (current_x - first_x);
     double distance_y = (current_y - first_y) * (current_y - first_y);
+    double distance_z = (current_z - first_z) * (current_z - first_z);
 
-    double distance = std::sqrt(distance_x + distance_y);
+    double distance = std::sqrt(distance_x + distance_y + distance_z);
 
     return distance <= tolerance;
 }

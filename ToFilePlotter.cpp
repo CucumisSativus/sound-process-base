@@ -6,7 +6,8 @@
 
 void ToFilePlotter::plot(PointsVector points) {
     for(unsigned long i=0; i< points.size(); ++i){
-        outFile << points[i].first << ' ' << points[i].second << std::endl;
+        outFile << std::get<0>(points[i]) << ' ' << std::get<1>(points[i]) << ' ' << std::get<2>(points[i]) <<
+        std::endl;
     }
 }
 
