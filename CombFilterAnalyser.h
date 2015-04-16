@@ -8,6 +8,7 @@
 #include <vector>
 #include <limits>
 #include <fftw3.h>
+#include <cmath>
 #include "WaveFunction.h"
 #include "WavFileHander.h"
 
@@ -19,7 +20,7 @@ public:
                        int freqMax, unsigned long batchSize);
     ~CombFilterAnalyser();
 
-    std::vector<int> results(int frequencyStep);
+    std::vector<double> results(int frequencyStep);
 private:
     CombVector samples;
     WaveFunction * function;

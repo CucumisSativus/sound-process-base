@@ -10,7 +10,7 @@
 class CombFunction : public WaveFunction{
 
 public:
-    virtual double compute(double x, double frequency);
+    virtual double compute(int x, int frequency);
 };
 
 

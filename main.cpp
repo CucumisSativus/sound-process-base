@@ -19,8 +19,8 @@ int main(void) {
 	}
 
 	CombFilterAnalyser analyser2(hander, new CombFunction(), 16, 22000, 10000);
-	std::vector<int> combFilterResults = analyser2.results(10);
-	for (std::vector<int>::const_iterator it = combFilterResults.cbegin(); it != combFilterResults.cend(); ++it) {
+	std::vector<double> combFilterResults = analyser2.results(10);
+	for (std::vector<double>::const_iterator it = combFilterResults.cbegin(); it != combFilterResults.cend(); ++it) {
 		std::cout << "Comb filter: " << *it << std::endl;
 	}
 	return 0;

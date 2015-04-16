@@ -14,8 +14,8 @@ CombFilterAnalyser::~CombFilterAnalyser() {
     delete function;
 }
 
-std::vector<int> CombFilterAnalyser::results(int frequencyStep) {
-    std::vector<int> results;
+std::vector<double> CombFilterAnalyser::results(int frequencyStep) {
+    std::vector<double> analysisResults;
     for (unsigned long batch = 0; batch < samples.size(); batch += batchSize) {
         double *samplesBatch = NULL;
         fftw_complex *transformedSamplesBatch = NULL;
@@ -31,36 +31,57 @@ std::vector<int> CombFilterAnalyser::results(int frequencyStep) {
         }
         calculateFft(samplesBatch, transformedSamplesBatch, dataSize);
 
-        int result = calculateCombFrequency(frequencyStep, samplesBatch, transformedSamplesBatch, dataSize);
+        double result = (double)calculateCombFrequency(frequencyStep, samplesBatch, transformedSamplesBatch, dataSize);
         std::cout << "batches from: " << batch << " to :" << batch + dataSize << " frequency: " << result << std::endl;
-        results.push_back(result);
+
+
+        analysisResults.push_back(result);
         fftw_free(samplesBatch);
         fftw_free(transformedSamplesBatch);
 
     }
-    return results;
+    fftw_complex * frequencies = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * analysisResults.size());
+    for(unsigned long i = 0; i < analysisResults.size(); ++i){
+        frequencies[i][0] = analysisResults[i];
+        frequencies[i][1] = 0;
+    }
+//    double * output = (double *) fftw_malloc(sizeof(double) * analysisResults.size());
+//    fftw_plan plan = fftw_plan_dft_c2r_1d(analysisResults.size(), frequencies, output, FFTW_MEASURE);
+//    std::vector<double> after_fftw;
+//    after_fftw.assign(output, output + analysisResults.size());
+
+    return analysisResults;
 }
 
 int CombFilterAnalyser::calculateCombFrequency(int frequencyStep, double *samplesBatch,
                                                fftw_complex *transformedSamplesBatch, int dataSize) {
-    double max = -1 * std::numeric_limits<double>::max();
+    fftw_complex max;
+    max[0] = 0;
+    max[1] = 0;
     int result = 0;
-    double sum = 0;
+    fftw_complex sum;
+    sum[0] = 0;
+    sum[1] = 0;
     for (int frequency = freqMin; frequency < freqMax; frequency += frequencyStep) {
         double *functionData;
         fftw_complex *transformedFunctionData;
         calculateFunctionFft(samplesBatch, dataSize, frequency, functionData, transformedFunctionData);
         for (unsigned long sampleIndex = 0; sampleIndex < dataSize; ++sampleIndex) {
-            sum += functionData[sampleIndex] * transformedSamplesBatch[sampleIndex][0];
+            sum[0] += functionData[sampleIndex] * transformedSamplesBatch[sampleIndex][0];
+            sum[1] += functionData[sampleIndex] * transformedSamplesBatch[sampleIndex][1];
 
         }
-        if (sum > max) {
-            max = sum;
+        double absoluteSum = std::sqrt(sum[0] * sum[0] + sum[1] * sum[1]);
+        double absoluteMax = std::sqrt(max[0] * max[0] + max[1] * max[1]);
+        if (absoluteSum > absoluteMax) {
+            max[0] = sum[0];
+            max[1] = sum[1];
             result = frequency;
         }
         fftw_free(functionData);
         fftw_free(transformedFunctionData);
-        sum = 0;
+        sum[0] = 0;
+        sum[1] = 0;
     }
     return result;
 }
