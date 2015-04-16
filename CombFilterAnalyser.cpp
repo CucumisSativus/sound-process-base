@@ -32,6 +32,7 @@ std::vector<int> CombFilterAnalyser::results(int frequencyStep) {
         calculateFft(samplesBatch, transformedSamplesBatch, dataSize);
 
         int result = calculateCombFrequency(frequencyStep, samplesBatch, transformedSamplesBatch, dataSize);
+        std::cout << "batches from: " << batch << " to :" << batch + dataSize << " frequency: " << result << std::endl;
         results.push_back(result);
         fftw_free(samplesBatch);
         fftw_free(transformedSamplesBatch);
@@ -42,7 +43,7 @@ std::vector<int> CombFilterAnalyser::results(int frequencyStep) {
 
 int CombFilterAnalyser::calculateCombFrequency(int frequencyStep, double *samplesBatch,
                                                fftw_complex *transformedSamplesBatch, int dataSize) {
-    double max = -1 * std::__1::numeric_limits::max();
+    double max = -1 * std::numeric_limits<double>::max();
     int result = 0;
     double sum = 0;
     for (int frequency = freqMin; frequency < freqMax; frequency += frequencyStep) {
@@ -50,7 +51,7 @@ int CombFilterAnalyser::calculateCombFrequency(int frequencyStep, double *sample
         fftw_complex *transformedFunctionData;
         calculateFunctionFft(samplesBatch, dataSize, frequency, functionData, transformedFunctionData);
         for (unsigned long sampleIndex = 0; sampleIndex < dataSize; ++sampleIndex) {
-            sum += transformedFunctionData[sampleIndex][0] * transformedSamplesBatch[sampleIndex][0];
+            sum += functionData[sampleIndex] * transformedSamplesBatch[sampleIndex][0];
 
         }
         if (sum > max) {
@@ -69,7 +70,7 @@ void CombFilterAnalyser::calculateFunctionFft(double *samplesBatch, int dataSize
     functionData = (double *) fftw_malloc(sizeof(double) * dataSize);
     transformedFunctionData = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * dataSize);
     for (unsigned long sampleIndex = 0; sampleIndex < dataSize; ++sampleIndex) {
-        functionData[sampleIndex] = function->compute(samplesBatch[sampleIndex], frequency);
+        functionData[sampleIndex] = function->compute(sampleIndex, frequency);
 
     }
     calculateFft(functionData, transformedFunctionData, dataSize);
@@ -77,7 +78,7 @@ void CombFilterAnalyser::calculateFunctionFft(double *samplesBatch, int dataSize
 
 void CombFilterAnalyser::calculateFft(double *data, fftw_complex *out, int dataSize) {
     fftw_plan plan = fftw_plan_dft_r2c_1d(dataSize, data, out, FFTW_MEASURE);
-
+    fftw_execute(plan);
     fftw_execute(plan);
     fftw_destroy_plan(plan);
 }
