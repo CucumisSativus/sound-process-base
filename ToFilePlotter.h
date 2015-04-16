@@ -14,7 +14,10 @@ class ToFilePlotter : public BasePlotter{
 public:
     ToFilePlotter(const std::string & fileName);
     ~ToFilePlotter();
-    virtual void plot(PointsVector points);
+
+    virtual void plot2d(PointsVector2d points);
+
+    virtual void plot(PointsVector3d points);
 
 
 private:

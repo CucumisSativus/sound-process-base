@@ -27,6 +27,8 @@ public:
     sampleVector wholeFile() const ;
     int samplerate() const;
     void writeToOutFile();
+    void writeToOutFile(std::vector<double> samples);
+    std::vector<int> batchesSizes(int batch_size);
 
 private:
     sf_count_t read(double *data);

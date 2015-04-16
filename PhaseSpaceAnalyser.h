@@ -29,7 +29,7 @@ private:
                         double first_x,
                         double first_y, double first_z);
 
-    PointsVector phaseSpace;
+    PointsVector3d phaseSpace;
     BasePlotter * plotter;
     std::vector<unsigned long> iterationsCounts;
     int samplingRate;

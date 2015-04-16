@@ -37,11 +37,32 @@ sampleVector WavFileHander::wholeFile() const {
 }
 
 void WavFileHander::writeToOutFile() {
-    double * outputData = samples.data();
+    double * outputData = new double[samples.size()];
+    std::copy(samples.begin(), samples.end(), outputData);
     sf_count_t size = samples.size();
     outfileHandle.write(outputData, size);
 }
 
 int WavFileHander::samplerate() const{
     infileHandle.samplerate();
+}
+
+void WavFileHander::writeToOutFile(std::vector<double> samples) {
+    double * outputData = new double[samples.size()];
+    std::copy(samples.begin(), samples.end(), outputData);
+    sf_count_t size = samples.size();
+    outfileHandle.write(outputData, size);
+}
+
+std::vector<int> WavFileHander::batchesSizes(int batch_size) {
+    std::vector<int> batches;
+    for(unsigned long batch =0; batch < samples.size(); batch += batch_size){
+        if(batch + batch_size > samples.size()){
+            batches.push_back(samples.size() - batch);
+        }
+        else{
+            batches.push_back(batch_size);
+        }
+    }
+    return batches;
 }

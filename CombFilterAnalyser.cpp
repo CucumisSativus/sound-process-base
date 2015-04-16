@@ -8,6 +8,7 @@ CombFilterAnalyser::CombFilterAnalyser(const WavFileHander &handler, WaveFunctio
                                        int freqMax, unsigned long batchSize)
         : function(function), freqMin(freqMin), freqMax(freqMax), batchSize(batchSize) {
     samples = handler.wholeFile();
+    sampleFrequency = handler.samplerate();
 }
 
 CombFilterAnalyser::~CombFilterAnalyser() {
@@ -24,7 +25,7 @@ std::vector<double> CombFilterAnalyser::results(int frequencyStep) {
         samplesBatch = (double *) fftw_malloc(sizeof(double) * dataSize);
         transformedSamplesBatch = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * dataSize);
         if (batch + dataSize < samples.size()) {
-            copy(samples.begin() + batch, samples.begin() + batch + dataSize - 1, samplesBatch);
+            copy(samples.begin() + batch, samples.begin() + batch + dataSize, samplesBatch);
         }
         else {
             copy(samples.begin() + batch, samples.end(), samplesBatch);
@@ -66,6 +67,8 @@ int CombFilterAnalyser::calculateCombFrequency(int frequencyStep, double *sample
         double *functionData;
         fftw_complex *transformedFunctionData;
         calculateFunctionFft(samplesBatch, dataSize, frequency, functionData, transformedFunctionData);
+
+
         for (unsigned long sampleIndex = 0; sampleIndex < dataSize; ++sampleIndex) {
             sum[0] += functionData[sampleIndex] * transformedSamplesBatch[sampleIndex][0];
             sum[1] += functionData[sampleIndex] * transformedSamplesBatch[sampleIndex][1];
@@ -83,6 +86,12 @@ int CombFilterAnalyser::calculateCombFrequency(int frequencyStep, double *sample
         sum[0] = 0;
         sum[1] = 0;
     }
+    PointsVector2d plotPoints;
+    for (unsigned long sampleIndex = 0; sampleIndex < dataSize; ++sampleIndex) {
+        plotPoints.push_back(std::make_tuple((double)function->compute(sampleIndex, result), (double)transformedSamplesBatch[sampleIndex][0]));
+    }
+    GnuplotPlotter ploter("comb_function_samples.dat");
+    ploter.plot2d(plotPoints);
     return result;
 }
 
@@ -104,3 +113,20 @@ void CombFilterAnalyser::calculateFft(double *data, fftw_complex *out, int dataS
     fftw_destroy_plan(plan);
 }
 
+void CombFilterAnalyser::printFunctionData(double *data, unsigned long size) {
+    GnuplotPlotter ploter("comb_function.dat");
+    PointsVector2d vector2d;
+    for(unsigned long i=0 ; i< size; ++i){
+        vector2d.push_back(std::make_tuple((double)i, data[i]));
+    }
+    ploter.plot2d(vector2d);
+}
+
+void CombFilterAnalyser::printSamplesData(fftw_complex *data, unsigned long size) {
+    GnuplotPlotter ploter("comb_samples.dat");
+    PointsVector2d vector2d;
+    for(unsigned long i=0 ; i< size; ++i){
+        vector2d.push_back(std::make_tuple((double)i, data[i][0]));
+    }
+    ploter.plot2d(vector2d);
+}

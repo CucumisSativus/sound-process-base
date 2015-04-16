@@ -9,8 +9,10 @@
 #include <limits>
 #include <fftw3.h>
 #include <cmath>
+#include <thread>
 #include "WaveFunction.h"
 #include "WavFileHander.h"
+#include "GnuplotPlotter.h"
 
 typedef std::vector<double> CombVector;
 
@@ -27,6 +29,7 @@ private:
     int freqMin;
     int freqMax;
     unsigned long batchSize;
+    int sampleFrequency;
 
     void calculateFft(double *data, fftw_complex *out, int dataSize);
 
@@ -35,6 +38,8 @@ private:
 
     int calculateCombFrequency(int frequencyStep, double *samplesBatch, fftw_complex *transformedSamplesBatch,
                                int dataSize);
+    void printFunctionData(double * data, unsigned long size);
+    void printSamplesData(fftw_complex * data, unsigned long size);
 };
 
 

@@ -42,9 +42,9 @@ PhaseSpaceAnalyser::~PhaseSpaceAnalyser() {
 }
 
 void PhaseSpaceAnalyser::plot(unsigned long start, unsigned long samples_count) const {
-    PointsVector::const_iterator begin = phaseSpace.begin() + start;
-    PointsVector::const_iterator end = phaseSpace.begin() + samples_count;
-    PointsVector subVector(begin, end);
+    PointsVector3d::const_iterator begin = phaseSpace.begin() + start;
+    PointsVector3d::const_iterator end = phaseSpace.begin() + samples_count;
+    PointsVector3d subVector(begin, end);
     plotter->plot(subVector);
 }
 
