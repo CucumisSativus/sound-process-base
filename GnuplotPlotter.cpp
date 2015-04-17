@@ -10,7 +10,7 @@ GnuplotPlotter::GnuplotPlotter(std::string filename)
 
 void GnuplotPlotter::plot(PointsVector3d points) {
     ToFilePlotter::plot(points);
-    system("gnuplot -e \"set term png; set output \'plot.png\' ; splot \'out.dat\' using 1:2:3 with lines\" ; qlmanage -p plot.png");
+    system("gnuplot -e \"set term png; set output \'plot.png\' ; plot \'out.dat\' using 1:2 \" ; qlmanage -p plot.png");
 }
 
 void GnuplotPlotter::plot2d(PointsVector2d points) {

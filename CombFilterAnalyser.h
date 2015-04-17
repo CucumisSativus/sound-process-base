@@ -40,6 +40,8 @@ private:
                                int dataSize);
     void printFunctionData(double * data, unsigned long size);
     void printSamplesData(fftw_complex * data, unsigned long size);
+
+    void plotFunctionAndSamples(fftw_complex *transformedSamplesBatch, int dataSize, int result);
 };
 
 

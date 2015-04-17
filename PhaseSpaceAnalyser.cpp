@@ -29,8 +29,9 @@ PhaseSpaceAnalyser::PhaseSpaceAnalyser(const WavFileHander &handler, BasePlotter
 
         }
         if (plotter) {
-            plot(batch - k, batch - k + iterations_num);
+            plot(batch - k, iterations_num);
         }
+        phaseSpace.clear();
         iterationsCounts.push_back(iterations_num);
     }
 }
@@ -42,8 +43,8 @@ PhaseSpaceAnalyser::~PhaseSpaceAnalyser() {
 }
 
 void PhaseSpaceAnalyser::plot(unsigned long start, unsigned long samples_count) const {
-    PointsVector3d::const_iterator begin = phaseSpace.begin() + start;
-    PointsVector3d::const_iterator end = phaseSpace.begin() + samples_count;
+    PointsVector3d::const_iterator begin = phaseSpace.begin();
+    PointsVector3d::const_iterator end = phaseSpace.begin()+ samples_count;
     PointsVector3d subVector(begin, end);
     plotter->plot(subVector);
 }

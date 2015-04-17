@@ -22,6 +22,7 @@ public:
 
 private:
     std::ofstream outFile;
+    std::string filename;
 };
 
 

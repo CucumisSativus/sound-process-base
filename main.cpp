@@ -36,7 +36,8 @@ int main(void) {
 
     WavFileHander hander(infilename, outfilename);
 //	PhaseSpaceAnalyser analyser(hander, new GnuplotPlotter("out.dat"), 10, 10000);
-    int batchSize = 10000;
+    int batchSize = 200;
+//    PhaseSpaceAnalyser analyser(hander, new GnuplotPlotter("out.dat"), 10, batchSize);
     PhaseSpaceAnalyser analyser(hander, nullptr, 10, batchSize);
     std::vector<double> phaseSpaceResults = analyser.results();
     int counter = 0;
