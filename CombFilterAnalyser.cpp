@@ -93,7 +93,7 @@ int CombFilterAnalyser::calculateCombFrequency(int frequencyStep, double *sample
 void CombFilterAnalyser::plotFunctionAndSamples(fftw_complex *transformedSamplesBatch, int dataSize, int result) {
     PointsVector2d plotPoints;
     for (unsigned long sampleIndex = 0; sampleIndex < dataSize; ++sampleIndex) {
-        plotPoints.push_back(std::__1::make_tuple((double) function->compute(sampleIndex, result), (double)transformedSamplesBatch[sampleIndex][0]));
+        plotPoints.push_back(std::make_tuple((double) function->compute(sampleIndex, result), (double)transformedSamplesBatch[sampleIndex][0]));
     }
     GnuplotPlotter ploter("comb_function_samples.dat");
     ploter.plot2d(plotPoints);

@@ -6,25 +6,33 @@
 
 
 PhaseSpaceAnalyser::PhaseSpaceAnalyser(const WavFileHander &handler, BasePlotter *plotter, unsigned long k,
-                                       unsigned long batch_size)
-        : plotter(plotter) {
-    samplingRate = handler.samplerate();
+                                           unsigned long batch_size, int dimensionsNum)
+        : plotter(plotter), dimensionsNum(dimensionsNum){
+    samplingRate = 44100;
+    if(dimensionsNum <=0 ){
+        throw std::invalid_argument("Wrong number of dimensions");
+    }
     sampleVector samples = handler.wholeFile();
-    for (unsigned long batch = 2 * k; batch < samples.size(); batch += batch_size) {
-        double first_x = samples[batch];
-        double first_y = samples[batch - k];
-        double first_z = samples[batch - 2 * k];
+    for (unsigned long batch = (dimensionsNum -1) * k; batch < samples.size(); batch += batch_size) {
+
+        std::vector<double> firstPoints;
+
+        for(int dimension = 0; dimension < dimensionsNum ; ++dimension){
+            firstPoints.push_back(samples[batch - (dimension *k)]);
+        }
         unsigned long iterations_num = 0;
 
         for (unsigned long sample = batch + 1; sample < samples.size() && sample < batch + batch_size; ++sample) {
-            double &x = samples[sample];
-            double &y = samples[sample - k];
-            double &z = samples[sample - 2 * k];
+            std::vector<double> currentPoints;
 
-            if (breakIteration(iterations_num, x, y, z, first_x, first_y, first_z)) {
+            for(int dimension =0; dimension < dimensionsNum; ++dimension){
+                currentPoints.push_back(samples[sample - (dimension * k)]);
+            }
+            
+            if (breakIteration(iterations_num, firstPoints, currentPoints)) {
                 break;
             }
-            phaseSpace.push_back(std::make_tuple(x, y, z));
+            currentPoints.clear();
             iterations_num++;
 
         }
@@ -49,22 +57,18 @@ void PhaseSpaceAnalyser::plot(unsigned long start, unsigned long samples_count) 
     plotter->plot(subVector);
 }
 
-bool PhaseSpaceAnalyser::breakIteration(unsigned long iterations_num, double current_x, double current_y,
-                                        double current_z, double first_x,
-                                        double first_y, double first_z) {
+bool PhaseSpaceAnalyser::breakIteration(unsigned long iterations_num, std::vector<double> firstPoints, std::vector<double> currentPoint) {
     const double tolerance = 0.01;
     const unsigned long minIterationNum = 50;
-
     if (iterations_num < minIterationNum) {
         return false;
     }
+    double distancesSum = 0;
+    for(int dimension =0; dimension < dimensionsNum; ++dimension){
+        distancesSum += (currentPoint[dimension] - firstPoints[dimension]) * (currentPoint[dimension] - firstPoints[dimension]);
+    }
 
-    double distance_x = (current_x - first_x) * (current_x - first_x);
-    double distance_y = (current_y - first_y) * (current_y - first_y);
-    double distance_z = (current_z - first_z) * (current_z - first_z);
-
-    double distance = std::sqrt(distance_x + distance_y + distance_z);
-
+    double distance = std::sqrt(distancesSum);
     return distance <= tolerance;
 }
 

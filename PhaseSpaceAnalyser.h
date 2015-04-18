@@ -11,6 +11,7 @@
 #include <set>
 #include <cmath>
 #include <tuple>
+#include <stdexcept>
 
 #include "analyser.h"
 #include "WavFileHander.h"
@@ -18,21 +19,19 @@
 class PhaseSpaceAnalyser : public Analyser {
 public:
     PhaseSpaceAnalyser(const WavFileHander &handler, BasePlotter *plotter, unsigned long k,
-                       unsigned long batch_size = 1024);
+                                               unsigned long batch_size, int dimensionsNum);
     ~PhaseSpaceAnalyser();
 
     void plot(unsigned long start, unsigned long samples_count) const;
 
     std::vector<double> results();
 private:
-    bool breakIteration(unsigned long iterations_num, double current_x, double current_y, double current_z,
-                        double first_x,
-                        double first_y, double first_z);
-
+    bool breakIteration(unsigned long iterations_num, std::vector<double> firstPoints, std::vector<double> currentPoint);
     PointsVector3d phaseSpace;
     BasePlotter * plotter;
     std::vector<unsigned long> iterationsCounts;
     int samplingRate;
+    int dimensionsNum;
 
 
 

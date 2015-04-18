@@ -23,7 +23,7 @@ std::vector<double> generateSoundSamples(std::vector<double> frequencies, int ba
 
         for (int i = 0; i < batchSize; i++) {
             samples.push_back(std::sin(phaseAngle));
-            phaseAngle += (double) *freq / sampleRate * 2 * M_PI;
+            phaseAngle += (double) *freq / 44100 * 2 * M_PI;
         }
         counter += batchSize;
     }
@@ -36,9 +36,10 @@ int main(void) {
 
     WavFileHander hander(infilename, outfilename);
 //	PhaseSpaceAnalyser analyser(hander, new GnuplotPlotter("out.dat"), 10, 10000);
-    int batchSize = 200;
+
+    int batchSize = 470;
 //    PhaseSpaceAnalyser analyser(hander, new GnuplotPlotter("out.dat"), 10, batchSize);
-    PhaseSpaceAnalyser analyser(hander, nullptr, 10, batchSize);
+    PhaseSpaceAnalyser analyser(hander, nullptr, 10, batchSize, 10);
     std::vector<double> phaseSpaceResults = analyser.results();
     int counter = 0;
     for (std::vector<double>::const_iterator it = phaseSpaceResults.cbegin(); it != phaseSpaceResults.cend(); ++it) {
