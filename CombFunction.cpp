@@ -4,24 +4,27 @@
 
 #include "CombFunction.h"
 
-double CombFunction::compute(int x, int frequency) {
-    if(x % frequency == 0){
+double CombFunction::compute(int x, int frequency, int resolution) {
+    int roundedArg = roundToNearestValue(x, resolution);
+    if(roundedArg % frequency == 0 || x == 0){
         return 1;
     }
-    else if(x % frequency == frequency/2){
+    else if(roundedArg % frequency == frequency/2){
         return -1;
     }
     else{
         return 0;
     }
-//    double halfPeriod = 0.5 * (1/frequency);
-//    double sum = 0;
-//    for(int n =1; n < 21; n+=2){
-//        double numerator = std::pow(-1, (n-1)/2);
-//        double denominator = n*n;
-//        double sinus = std::sin((n*M_PI*x)/halfPeriod);
-//
-//        sum += (numerator/denominator)*sinus;
-//    }
-//    return (8/(M_PI*M_PI)) * sum;
+}
+
+int CombFunction::roundToNearestValue(int x, int resolution) {
+    int distanceFromClosestResolution = x - (x - (x % resolution));
+    int roundedValue =0;
+    if(distanceFromClosestResolution <= resolution/2){
+        roundedValue = x - distanceFromClosestResolution;
+    }
+    else{
+        roundedValue= x + (resolution - distanceFromClosestResolution);
+    }
+    return roundedValue;
 }

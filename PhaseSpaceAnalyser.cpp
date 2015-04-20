@@ -58,7 +58,7 @@ void PhaseSpaceAnalyser::plot(unsigned long start, unsigned long samples_count) 
 }
 
 bool PhaseSpaceAnalyser::breakIteration(unsigned long iterations_num, std::vector<double> firstPoints, std::vector<double> currentPoint) {
-    const double tolerance = 0.01;
+    const double tolerance = 0.05;
     const unsigned long minIterationNum = 50;
     if (iterations_num < minIterationNum) {
         return false;

@@ -29,19 +29,12 @@ private:
     int freqMin;
     int freqMax;
     unsigned long batchSize;
-    int sampleFrequency;
+    int samplingRate;
 
     void calculateFft(double *data, fftw_complex *out, int dataSize);
-
-    void calculateFunctionFft(double *samplesBatch, int dataSize, int frequency, double *&functionData,
-                              fftw_complex *&transformedFunctionData);
-
-    int calculateCombFrequency(int frequencyStep, double *samplesBatch, fftw_complex *transformedSamplesBatch,
-                               int dataSize);
-    void printFunctionData(double * data, unsigned long size);
-    void printSamplesData(fftw_complex * data, unsigned long size);
-
-    void plotFunctionAndSamples(fftw_complex *transformedSamplesBatch, int dataSize, int result);
+    int calculateCombFrequency(int frequencyStep, fftw_complex *transformedSamplesBatch, int dataSize,
+                                                   int resolution);
+    void prepareDataForFft(double *data, int size, int batchSize);
 };
 
 

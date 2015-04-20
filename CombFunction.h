@@ -10,7 +10,10 @@
 class CombFunction : public WaveFunction{
 
 public:
-    virtual double compute(int x, int frequency);
+    virtual double compute(int x, int frequency, int resolution);
+private:
+    int roundToNearestValue(int x, int resolution);
+
 };
 
 
