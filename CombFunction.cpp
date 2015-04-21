@@ -5,12 +5,12 @@
 #include "CombFunction.h"
 
 double CombFunction::compute(int x, int frequency, int resolution) {
-    int roundedArg = roundToNearestValue(x, resolution);
-    if(roundedArg % frequency == 0 || x == 0){
-        return 1;
-    }
-    else if(roundedArg % frequency == frequency/2){
+    int roundedArg = x; //roundToNearestValue(x, resolution);
+    if(roundedArg % frequency == frequency/2){
         return -1;
+    }
+    else if(roundedArg % frequency == 0 || x == 0){
+        return 1;
     }
     else{
         return 0;

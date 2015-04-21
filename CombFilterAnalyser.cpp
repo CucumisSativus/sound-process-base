@@ -3,6 +3,7 @@
 //
 
 #include "CombFilterAnalyser.h"
+#include "GnuplotPlotter.h"
 
 CombFilterAnalyser::CombFilterAnalyser(const WavFileHander &handler, WaveFunction *function, int freqMin,
                                        int freqMax, unsigned long batchSize)
@@ -48,15 +49,27 @@ int CombFilterAnalyser::calculateCombFrequency(int frequencyStep, fftw_complex *
     double max = 0;
     int result = 0;
     double sum = 0;
+    GnuplotPlotter plotter("comb.dat");
+    PointsVector2d points;
+    bool plot = false;
     for (int frequency = freqMin; frequency < freqMax; frequency += frequencyStep) {
         for (unsigned long sampleIndex = 0; sampleIndex < dataSize/2; ++sampleIndex) {
-            double functionValue = function->compute(sampleIndex, frequency, resolution);
+            double functionValue = function->compute(sampleIndex, frequency/resolution, resolution);
             double combReal = transformedSamplesBatch[sampleIndex][0];
             double combImaginary =  transformedSamplesBatch[sampleIndex][1];
-            double combMagnitude =  functionValue * std::sqrt(combReal * combReal + combImaginary * combImaginary);
+            double combMagnitude =  std::sqrt(combReal * combReal + combImaginary * combImaginary);
+            points.push_back(std::make_tuple((double)1000 * functionValue, (double)100 * combMagnitude) );
+            if(combMagnitude != 0){
+                plot = true;
+            }
 
-            sum += combMagnitude;
+            sum += functionValue * combMagnitude;
         }
+        if(frequency == 591) {
+//            plotter.plot2d(points);
+            plot = false;
+        }
+        points.clear();
         if (sum > max) {
             max = sum;
             result = frequency;

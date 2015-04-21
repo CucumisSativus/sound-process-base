@@ -27,7 +27,7 @@ int main(void) {
 
     WavFileHander hander(infilename, outfilename);
 
-    int batchSize = 1024;
+    int batchSize = 2048;
     PhaseSpaceAnalyser analyser(hander, nullptr, 10, batchSize, 5);
     std::vector<double> phaseSpaceResults = analyser.results();
     int counter = 0;
